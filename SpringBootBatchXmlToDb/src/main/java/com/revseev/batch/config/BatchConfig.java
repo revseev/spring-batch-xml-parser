@@ -1,9 +1,9 @@
 package com.revseev.batch.config;
 
 import com.revseev.batch.model.Person;
-import com.revseev.batch.processor.PersonItemProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -12,7 +12,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -36,7 +35,11 @@ public class BatchConfig {
     private DataSource dataSource;
 
     @Autowired
-    private PersonItemProcessor itemProcessor;
+    private ItemProcessor<Person, Person> itemProcessor;
+
+    @Autowired
+    private StepExecutionListener stepExecutionListener;
+
 
     @Bean
     public StaxEventItemReader<Person> reader() {
@@ -69,6 +72,7 @@ public class BatchConfig {
                 .reader(reader())
                 .processor(itemProcessor)
                 .writer(writer())
+                .listener(stepExecutionListener)
                 .build();
     }
 

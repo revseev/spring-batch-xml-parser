@@ -14,10 +14,10 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
     public Person process(Person person) throws Exception {
         String capitalizedFirstName = StringUtils.capitalize(person.getFirstName().toLowerCase());
         String capitalizedLastName = StringUtils.capitalize(person.getLastName().toLowerCase());
-
-        // меняем поля в том же объекте, но могли бы создавать новый как в ккиге (но зачем?)
+        // меняем поля в том же объекте, но могли бы создавать новый как в книге (но зачем?)
         person.setFirstName(capitalizedFirstName);
         person.setLastName(capitalizedLastName);
+        log.debug("Processing person #{}", person.getPersonId());
         return person;
     }
 }

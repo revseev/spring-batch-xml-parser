@@ -12,27 +12,30 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
 
+//@EnableAsync
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringBootBatchXmlToDbApplicationTests {
 
-	@Autowired
-	JobLauncher jobLauncher;
-	@Autowired
-	Job job;
+//	@Autowired
+//	JobLauncher jobLauncher;
+//	@Autowired
+//	Job job;
 
 	@Test
 	public void contextLoads() {
 	}
 
-	@Test
-	public void shouldRunJob() throws
-												  JobParametersInvalidException,
-												  JobExecutionAlreadyRunningException,
-												  JobRestartException,
-												  JobInstanceAlreadyCompleteException {
-		jobLauncher.run(job, new JobParameters());
-	}
+//	@Test
+//	public void shouldRunJob() throws
+//												  JobParametersInvalidException,
+//												  JobExecutionAlreadyRunningException,
+//												  JobRestartException,
+//												  JobInstanceAlreadyCompleteException {
+//		jobLauncher.run(j));
+//
+//	}
 }

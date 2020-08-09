@@ -83,11 +83,11 @@ public class BatchConfig {
                       ItemProcessor<Person, Person> processor,
                       ItemWriter<Person> writer) {
         return stepBuilderFactory.get("step1")
-                                 .listener(stepExecutionListener)
                 .<Person, Person>chunk(100)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
+                                 .listener(stepExecutionListener)
                 .build();
     }
 
@@ -95,7 +95,8 @@ public class BatchConfig {
     public Job job(@Qualifier("step1") Step step1) {
         return jobBuilderFactory.get("parsePersonJob")
                                 .incrementer(new RunIdIncrementer()) // why?
-                                .start(step1)
+                                .flow(step1)
+                                .end()
                                 .build();
     }
 }

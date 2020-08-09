@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Slf4j
-@Component/*("itemProcessor")*/
+@Component("itemProcessor")
 public class PersonItemProcessor implements ItemProcessor<Person, Person> {
 
     @Override

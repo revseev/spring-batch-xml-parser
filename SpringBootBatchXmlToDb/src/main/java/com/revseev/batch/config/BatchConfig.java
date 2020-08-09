@@ -41,6 +41,9 @@ public class BatchConfig {
     @Autowired
     private DataSource dataSource;
 
+//    @Autowired
+//    private ItemProcessor<Person, Person> itemProcessor;
+
     @Autowired
     private StepExecutionListener stepExecutionListener;
 
@@ -87,14 +90,14 @@ public class BatchConfig {
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
-                                 .listener(stepExecutionListener)
+                .listener(stepExecutionListener)
                 .build();
     }
 
     @Bean
-    public Job job(@Qualifier("step1") Step step1) {
-        return jobBuilderFactory.get("parsePersonJob")
-                                .incrementer(new RunIdIncrementer()) // why?
+    public Job exportPersonJob(@Qualifier("step1") Step step1) {
+        return jobBuilderFactory.get("importPersonJob")
+                                .incrementer(new RunIdIncrementer())
                                 .flow(step1)
                                 .end()
                                 .build();

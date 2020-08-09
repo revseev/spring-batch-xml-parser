@@ -17,7 +17,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
         // меняем поля в том же объекте, но могли бы создавать новый как в книге (но зачем?)
         person.setFirstName(capitalizedFirstName);
         person.setLastName(capitalizedLastName);
-        log.info("Processing person #{}", person.getPersonId());
+        log.debug("Processing person #{}", person.getPersonId());
         return person;
     }
 }

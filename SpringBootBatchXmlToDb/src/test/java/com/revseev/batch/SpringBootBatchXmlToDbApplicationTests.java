@@ -1,4 +1,4 @@
-package com.infotech.batch;
+package com.revseev.batch;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

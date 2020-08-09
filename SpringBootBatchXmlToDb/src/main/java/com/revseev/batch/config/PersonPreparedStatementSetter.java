@@ -1,11 +1,10 @@
-package com.infotech.batch.config;
+package com.revseev.batch.config;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.revseev.batch.model.Person;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
-
-import com.infotech.batch.model.Person;
 
 public class PersonPreparedStatementSetter implements ItemPreparedStatementSetter<Person> {
 

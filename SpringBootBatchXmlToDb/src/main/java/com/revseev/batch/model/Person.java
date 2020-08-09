@@ -1,4 +1,4 @@
-package com.infotech.batch.model;
+package com.revseev.batch.model;
 
 public class Person {
 

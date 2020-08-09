@@ -1,16 +1,18 @@
-package com.infotech.batch.config;
+package com.revseev.batch.config;
 
-import com.infotech.batch.model.Person;
-import com.infotech.batch.processor.PersonItemProcessor;
+import com.revseev.batch.model.Person;
+import com.revseev.batch.processor.PersonItemProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -33,10 +35,8 @@ public class BatchConfig {
     @Autowired
     private DataSource dataSource;
 
-    @Bean
-    public PersonItemProcessor processor() {
-        return new PersonItemProcessor();
-    }
+    @Autowired
+    private PersonItemProcessor itemProcessor;
 
     @Bean
     public StaxEventItemReader<Person> reader() {
@@ -45,7 +45,7 @@ public class BatchConfig {
         reader.setFragmentRootElementName("person");
 
         Map<String, String> aliasesMap = new HashMap<>();
-        aliasesMap.put("person", "com.infotech.batch.model.Person");
+        aliasesMap.put("person", "com.revseev.batch.model.Person");
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasesMap);
 
@@ -67,7 +67,7 @@ public class BatchConfig {
         return stepBuilderFactory.get("step1")
                 .<Person, Person>chunk(100)
                 .reader(reader())
-                .processor(processor())
+                .processor(itemProcessor)
                 .writer(writer())
                 .build();
     }

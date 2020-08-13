@@ -12,7 +12,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,28 +65,22 @@ public class BatchConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<PersonType> writer() {
-        JdbcBatchItemWriter<PersonType> writer = new JdbcBatchItemWriter<>();
-        writer.setDataSource(dataSource);
-        writer.setSql("INSERT INTO person(person_id,first_name,last_name,email,age) VALUES(?,?,?,?,?)");
-        //Another way:
-        /*itemWriter.setItemSqlParameterSourceProvider(
-          new BeanPropertyItemSqlParameterSourceProvider<>());
-          itemWriter.setSql(
-          "INSERT INTO singer (first_name, last_name, song) VALUES (:firstName, :lastName, :song)");*/
-        writer.setItemPreparedStatementSetter(new PersonPreparedStatementSetter());
-        return writer;
+    public ItemProcessor<PersonType, String> processor() {
+        return PersonType::getLastName;
     }
 
     @Bean
-    public Step step1(ItemReader<PersonType> reader,
-                      ItemProcessor<PersonType, PersonType> processor,
-                      ItemWriter<PersonType> writer) {
+    public ItemWriter<String> writer() {
+        return items -> items.forEach(System.out::println);
+    }
+
+    @Bean
+    public Step step1() {
         return stepBuilderFactory.get("step1")
-                .<PersonType, PersonType>chunk(100)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
+                .<PersonType, String >chunk(100)
+                .reader(reader())
+                .processor(processor())
+                .writer(writer())
                 .listener(stepExecutionListener)
                 .build();
     }

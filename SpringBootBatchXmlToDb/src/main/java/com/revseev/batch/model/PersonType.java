@@ -1,6 +1,6 @@
 package com.revseev.batch.model;
 
-public class Person {
+public class PersonType {
 
     private Integer personId;
     private String firstName;

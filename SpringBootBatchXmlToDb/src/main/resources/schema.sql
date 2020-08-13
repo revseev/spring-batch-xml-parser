@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS person;
+DROP TABLE IF EXISTS personType;
 
-CREATE TABLE person  (
+CREATE TABLE personType  (
     person_id BIGINT NOT NULL PRIMARY KEY,
     first_name VARCHAR(40),
     last_name VARCHAR(40),

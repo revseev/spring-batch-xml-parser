@@ -1,6 +1,6 @@
 package com.revseev.batch.config;
 
-import com.revseev.batch.model.Person;
+import com.revseev.batch.model.PersonType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -16,10 +16,8 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 
@@ -42,7 +40,7 @@ public class BatchConfig {
     private DataSource dataSource;
 
 //    @Autowired
-//    private ItemProcessor<Person, Person> itemProcessor;
+//    private ItemProcessor<PersonType, PersonType> itemProcessor;
 
     @Autowired
     private StepExecutionListener stepExecutionListener;
@@ -51,15 +49,15 @@ public class BatchConfig {
     private ParsingResourceProvider resourceProvider;
 
     @Bean
-    public StaxEventItemReader<Person> reader() {
-        StaxEventItemReader<Person> reader = new StaxEventItemReader<>();
+    public StaxEventItemReader<PersonType> reader() {
+        StaxEventItemReader<PersonType> reader = new StaxEventItemReader<>();
         Resource resource = resourceProvider.provide();
         log.info("=========>>>> " + resource.getFilename());
         reader.setResource(resource);
         reader.setFragmentRootElementName("person");
 
         Map<String, String> aliasesMap = new HashMap<>();
-        aliasesMap.put("person", "com.revseev.batch.model.Person");
+        aliasesMap.put("person", "com.revseev.batch.model.PersonType");
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasesMap);
 
@@ -68,8 +66,8 @@ public class BatchConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Person> writer() {
-        JdbcBatchItemWriter<Person> writer = new JdbcBatchItemWriter<>();
+    public JdbcBatchItemWriter<PersonType> writer() {
+        JdbcBatchItemWriter<PersonType> writer = new JdbcBatchItemWriter<>();
         writer.setDataSource(dataSource);
         writer.setSql("INSERT INTO person(person_id,first_name,last_name,email,age) VALUES(?,?,?,?,?)");
         //Another way:
@@ -82,11 +80,11 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step step1(ItemReader<Person> reader,
-                      ItemProcessor<Person, Person> processor,
-                      ItemWriter<Person> writer) {
+    public Step step1(ItemReader<PersonType> reader,
+                      ItemProcessor<PersonType, PersonType> processor,
+                      ItemWriter<PersonType> writer) {
         return stepBuilderFactory.get("step1")
-                .<Person, Person>chunk(100)
+                .<PersonType, PersonType>chunk(100)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -96,7 +94,7 @@ public class BatchConfig {
 
     @Bean
     public Job exportPersonJob(@Qualifier("step1") Step step1) {
-        return jobBuilderFactory.get("importPersonJob")
+        return jobBuilderFactory.get("importPersonJob2")
                                 .incrementer(new RunIdIncrementer())
                                 .flow(step1)
                                 .end()

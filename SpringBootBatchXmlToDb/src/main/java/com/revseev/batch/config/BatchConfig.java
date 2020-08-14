@@ -1,5 +1,7 @@
 package com.revseev.batch.config;
 
+import com.revseev.batch.listeners.CustomItemWriteListener;
+import com.revseev.batch.model.PARAMETRSType;
 import com.revseev.batch.model.PersonType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -30,16 +32,13 @@ import java.util.Map;
 public class BatchConfig {
 
     @Autowired
+    private CustomItemWriteListener itemWriteListener;
+
+    @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    private DataSource dataSource;
-
-//    @Autowired
-//    private ItemProcessor<PersonType, PersonType> itemProcessor;
 
     @Autowired
     private StepExecutionListener stepExecutionListener;
@@ -48,46 +47,55 @@ public class BatchConfig {
     private ParsingResourceProvider resourceProvider;
 
     @Bean
-    public StaxEventItemReader<PersonType> reader() {
-        StaxEventItemReader<PersonType> reader = new StaxEventItemReader<>();
+    public StaxEventItemReader<PARAMETRSType> reader() {
+        StaxEventItemReader<PARAMETRSType> reader = new StaxEventItemReader<>();
         Resource resource = resourceProvider.provide();
         log.info("=========>>>> " + resource.getFilename());
         reader.setResource(resource);
-        reader.setFragmentRootElementName("person");
+        reader.setFragmentRootElementName("PARAMETRS");
 
         Map<String, String> aliasesMap = new HashMap<>();
-        aliasesMap.put("person", "com.revseev.batch.model.PersonType");
+        aliasesMap.put("PARAMETRS", "com.revseev.batch.model.PARAMETRSType");
+        aliasesMap.put("OBJCODE", "java.lang.String");
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasesMap);
+        marshaller.getXStream().ignoreUnknownElements();
 
         reader.setUnmarshaller(marshaller);
         return reader;
     }
 
     @Bean
-    public ItemProcessor<PersonType, String> processor() {
-        return PersonType::getLastName;
+    public ItemProcessor<PARAMETRSType, String> processor() {
+        return item -> {
+            System.out.println("In processor...");
+            return item.getObjCode();
+        };
     }
 
     @Bean
     public ItemWriter<String> writer() {
-        return items -> items.forEach(System.out::println);
+        return items -> {
+            System.out.println("In writer....");
+            items.forEach(System.out::println);
+        };
     }
 
     @Bean
     public Step step1() {
         return stepBuilderFactory.get("step1")
-                .<PersonType, String >chunk(100)
+                .<PARAMETRSType, String >chunk(100)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
                 .listener(stepExecutionListener)
+                .listener(itemWriteListener)
                 .build();
     }
 
     @Bean
     public Job exportPersonJob(@Qualifier("step1") Step step1) {
-        return jobBuilderFactory.get("importPersonJob2")
+        return jobBuilderFactory.get("importPersonJob3")
                                 .incrementer(new RunIdIncrementer())
                                 .flow(step1)
                                 .end()

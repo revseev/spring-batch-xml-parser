@@ -54,14 +54,16 @@ public class BatchConfig {
         reader.setResource(resource);
         reader.setFragmentRootElementName("PARAMETRS");
 
-        Map<String, String> aliasesMap = new HashMap<>();
+/*        Map<String, String> aliasesMap = new HashMap<>();
         aliasesMap.put("PARAMETRS", "com.revseev.batch.model.PARAMETRSType");
         aliasesMap.put("OBJCODE", "java.lang.String");
         XStreamMarshaller marshaller = new XStreamMarshaller();
         marshaller.setAliases(aliasesMap);
-        marshaller.getXStream().ignoreUnknownElements();
+        marshaller.getXStream().ignoreUnknownElements();*/
 
-        reader.setUnmarshaller(marshaller);
+        CustomUnmarshaller<PARAMETRSType> parametrsTypeCustomUnmarshaller = new CustomUnmarshaller<>(PARAMETRSType.class);
+
+        reader.setUnmarshaller(parametrsTypeCustomUnmarshaller);
         return reader;
     }
 

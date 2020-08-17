@@ -2,8 +2,14 @@
 <aaa>
     <PARAMETRS>
         <OBJCODE>JOHNSON</OBJCODE>
+        <attr>
+            <name>aaa</name>
+        </attr>
     </PARAMETRS>
     <PARAMETRS>
         <OBJCODE>BABY</OBJCODE>
+        <attr>
+            <name>aaa</name>
+        </attr>
     </PARAMETRS>
 </aaa>
